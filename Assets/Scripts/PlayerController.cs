@@ -7,20 +7,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private GroundCheck groundCheck;
     [SerializeField] private Camera mainCamera;
- 
-    [Header("// SPEED ------------------------------------------------------------------------------------------")]
-    [SerializeField] float speed;
-    [SerializeField] public bool IsMoving;
-    [SerializeField] float runSpeed;
-    [SerializeField] public bool IsRunning;
-    float curretSpeed;
 
+    [Header("// SPEED -----------------------------------------------------------------------------------------")]
+    [SerializeField] float speed;
+    [HideInInspector] public bool IsMoving;
+    [HideInInspector] public bool IsWalking;
+    [HideInInspector] public float inputMagnitude;
+    [SerializeField] float runSpeed;
+    [HideInInspector] public bool IsRunning;
+    float curretSpeed;
+    [Space(5)]
     [SerializeField] float rotationSpeed;
 
     [Header("// JUMP ------------------------------------------------------------------------------------------")]
     [SerializeField] float jumpForce;
-    [SerializeField] float jumpMargin;
-    [SerializeField] public bool IsJumping;
+    [SerializeField] float coyoteTime;
+    [SerializeField] float jumpBoostLimit;
+    [HideInInspector] public bool IsJumping;
     float marginTimer;
 
     private float horizontal;
@@ -31,8 +34,9 @@ public class PlayerController : MonoBehaviour
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
     private void Awake()
     {
-        if (rb == null) rb = GetComponent<Rigidbody>();
-        if (groundCheck == null) groundCheck = GetComponentInChildren<GroundCheck>();
+        if (!rb) rb = GetComponent<Rigidbody>();
+        if (!groundCheck) groundCheck = GetComponentInChildren<GroundCheck>();
+
         mainCamera = Camera.main;
     }
     
@@ -45,16 +49,22 @@ public class PlayerController : MonoBehaviour
         IsMoving = horizontal != 0 || vertical != 0;
 
 
+        // For Walk Animator
+        if (IsMoving && groundCheck.IsGrounded) IsWalking = true;
+        else IsWalking = false;
+        inputMagnitude = new Vector2(horizontal, vertical).magnitude;
+
+
         // Switch Velocity
         if (Input.GetButton("Run") && IsMoving) IsRunning = true;
         else IsRunning = false;
 
-        if (IsRunning) { curretSpeed = runSpeed; }
-        else { curretSpeed = speed; }
+        if (IsRunning) curretSpeed = runSpeed;
+        else curretSpeed = speed;
 
 
         // Jumping
-        if (groundCheck.IsGrounded) marginTimer = jumpMargin;
+        if (groundCheck.IsGrounded) marginTimer = coyoteTime;
         else marginTimer -= Time.deltaTime;
 
         if (Input.GetButtonDown("Jump") && marginTimer > 0f) IsJumping = true;
@@ -67,6 +77,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
+
     // FUNCTIONS //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
     private void Move()
     {
@@ -77,18 +88,25 @@ public class PlayerController : MonoBehaviour
         // Vector normalized
         if (direction.magnitude > 1f) direction.Normalize();
 
+        // Apply Move and Speed
         Vector3 velocity = direction * curretSpeed;
         rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
 
 
-
-        // ROTATION //----------------------------------------------------
+        // ROTATION //------- Roteate the player in the move direction
         if (direction != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             Quaternion smoothRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
             rb.MoveRotation(smoothRotation);
+        }
+
+
+        // JUMP BOOST LIMIT //------- This will limit an accidental jump boost when the player jump on some edges
+        if (!IsJumping && groundCheck.IsGrounded && rb.velocity.y > jumpBoostLimit)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, jumpBoostLimit, rb.velocity.z);
         }
     }
 
