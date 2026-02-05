@@ -210,7 +210,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2063932786}
         m_TargetAssemblyTypeName: UI_StartMenu, Assembly-CSharp
-        m_MethodName: LoadScene
+        m_MethodName: LoadSceneTesting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

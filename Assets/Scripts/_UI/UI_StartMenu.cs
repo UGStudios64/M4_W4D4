@@ -5,8 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class UI_StartMenu : MonoBehaviour
 {
-    public void LoadScene()
+    public void LoadSceneTesting()
     {
         SceneManager.LoadScene("Testing");
+    }
+
+    public void LoadSceneTitleScreen()
+    {
+        SceneManager.LoadScene("TitleScreen");
     }
 }

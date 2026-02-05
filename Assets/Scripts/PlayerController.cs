@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private Rigidbody rb;
+    [SerializeField] public Rigidbody rb;
     [SerializeField] private GroundCheck groundCheck;
     [SerializeField] private Camera mainCamera;
 
     [Header("// SPEED -----------------------------------------------------------------------------------------")]
     [SerializeField] float speed;
+    
     [HideInInspector] public bool IsMoving;
     [HideInInspector] public bool IsWalking;
     [HideInInspector] public float inputMagnitude;
@@ -18,6 +19,8 @@ public class PlayerController : MonoBehaviour
     float curretSpeed;
     [Space(5)]
     [SerializeField] float rotationSpeed;
+    [HideInInspector] public float moveRotation;
+    private float moveInputAngle;
 
     [Header("// JUMP ------------------------------------------------------------------------------------------")]
     [SerializeField] float jumpForce;
@@ -29,6 +32,7 @@ public class PlayerController : MonoBehaviour
     private float horizontal;
     private float vertical;
     private Vector3 direction;
+    private Vector2 inputAngle;
 
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
@@ -49,10 +53,15 @@ public class PlayerController : MonoBehaviour
         IsMoving = horizontal != 0 || vertical != 0;
 
 
-        // For Walk Animator
+        // For Animator
         if (IsMoving && groundCheck.IsGrounded) IsWalking = true;
         else IsWalking = false;
-        inputMagnitude = new Vector2(horizontal, vertical).magnitude;
+
+        inputAngle = new Vector2(horizontal, vertical);
+        inputMagnitude = inputAngle.magnitude;
+
+        moveInputAngle = Mathf.Atan2(inputAngle.x, inputAngle.y) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y;
+        moveRotation = Mathf.DeltaAngle(transform.rotation.eulerAngles.y, moveInputAngle);
 
 
         // Switch Velocity
@@ -64,10 +73,10 @@ public class PlayerController : MonoBehaviour
 
 
         // Jumping
-        if (groundCheck.IsGrounded) marginTimer = coyoteTime;
+        if (groundCheck.IsGrounded) marginTimer = coyoteTime; 
         else marginTimer -= Time.deltaTime;
 
-        if (Input.GetButtonDown("Jump") && marginTimer > 0f) IsJumping = true;
+        if (Input.GetButtonDown("Jump") && marginTimer > 0f) IsJumping = true; 
     }
 
     private void FixedUpdate()
@@ -75,7 +84,6 @@ public class PlayerController : MonoBehaviour
         Move();
         Jump();
     }
-
 
 
     // FUNCTIONS //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
