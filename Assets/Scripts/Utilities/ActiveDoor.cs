@@ -1,35 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ActiveDoor : MonoBehaviour
 {
-    [SerializeField] private GameObject player;
     [SerializeField] private Animator anim;
     [SerializeField] private SpriteRenderer logo;
     [SerializeField] private Material glow;
-    [SerializeField] private Image fade;
-    CoinsHandler coinsHandler;
+    [Space(5)]
+    [SerializeField] private GameObject player;
+    [SerializeField] private UnityEvent OnVictory;
+    private CoinsHandler coinsHandler;
 
     [Header("// FOR ACTIVE -----------------------------------------------------------------------------------------")]
     public int needCoin;
     private bool IsGlowing;
     private bool IsOpening;
 
+
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
     private void Awake()
     {
+        if (!player) Debug.LogWarning($"Missing Door Target");
+        if (!logo) Debug.LogWarning($"Missing Logo");
+        if (!glow) Debug.LogWarning($"Missing Glow");
+
         if (!anim) anim = GetComponentInChildren<Animator>();
-
-        if (!player) Debug.LogError($"Missing Door Target");
-        if (!logo) Debug.LogError($"Missing Logo");
-
-        fade.canvasRenderer.SetAlpha(0f);
     }
 
-    private void Start()
+    void Start()
     {
         coinsHandler = player.GetComponent<CoinsHandler>();
     }
@@ -51,8 +53,9 @@ public class ActiveDoor : MonoBehaviour
         if (coinsHandler.coins >= needCoin && !IsGlowing)
         {
             Debug.Log($"Door Logo is Glowing");
-            logo.material = glow;
+
             IsGlowing = true;
+            logo.material = glow;
         }
     }
 
@@ -61,16 +64,10 @@ public class ActiveDoor : MonoBehaviour
         if (other.CompareTag("Player") && IsGlowing && !IsOpening)
         {
             Debug.Log($"The Door is Opening");
+
             IsOpening = true;
             anim.SetBool("Opening", IsOpening);
-
-            fade.CrossFadeAlpha(1, 2, true);
-            Invoke("VictoryScene", 2f);
+            OnVictory.Invoke();
         }
-    }
-
-    public void VictoryScene()
-    {
-        SceneManager.LoadScene("Victory");
     }
 }

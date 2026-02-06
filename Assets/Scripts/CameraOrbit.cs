@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraOrbit : MonoBehaviour
@@ -48,7 +46,7 @@ public class CameraOrbit : MonoBehaviour
 
 
         yaw += mouseX + stickX;
-        pitch += mouseY + stickY;
+        pitch += mouseY + stickY; // It's not inverted because on controller feels better for me:)
         pitch = Mathf.Clamp(pitch, bottomClamp, topClamp);
     }
 

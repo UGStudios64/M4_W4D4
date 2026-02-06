@@ -5,12 +5,10 @@ public class Life : MonoBehaviour
 {
     [SerializeField] int maxHP;
     public int HP;
-  
-    [HideInInspector] public bool IsHit;
-    [HideInInspector] public bool IsDeath;
-    [SerializeField] private float destroyTime = 1f;
+    private Collider col;
 
     [SerializeField] private UnityEvent<int, int> OnHPChanged;
+    [SerializeField] private UnityEvent OnDeath;
 
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
@@ -18,6 +16,7 @@ public class Life : MonoBehaviour
     {
         HP = maxHP;
         OnHPChanged.Invoke(HP, maxHP);
+        col = GetComponentInChildren<Collider>();
     }
 
 
@@ -30,26 +29,26 @@ public class Life : MonoBehaviour
         {
             // SetUp the Death sequence
             OnHPChanged.Invoke(HP, maxHP);
-            this.tag = "DEATH";
-            IsDeath = true;
+            OnDeath.Invoke();
+            col.tag = "DEAD";
 
             Debug.Log($"{gameObject.name} is dead");
-            Destroy(gameObject, destroyTime);
         }
         else
         {
             OnHPChanged.Invoke(HP, maxHP);
-            IsHit = true;
             Debug.Log($"{gameObject.name} has {HP}/{maxHP}");
         }
     }
+
 
     public void TakeHeal(int amout)
     {
         HP += amout;
 
-        OnHPChanged.Invoke(HP, maxHP);
         if (HP > maxHP) HP = maxHP;
+        OnHPChanged.Invoke(HP, maxHP);
+
         Debug.Log($"{gameObject.name} ha {HP}/{maxHP}");
     }
 }

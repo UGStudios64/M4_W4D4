@@ -6,33 +6,32 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] public Rigidbody rb;
     [SerializeField] private GroundCheck groundCheck;
-    [SerializeField] private Camera mainCamera;
+    [SerializeField] public Camera mainCamera;
+    private Collider col;
 
     [Header("// SPEED -----------------------------------------------------------------------------------------")]
     [SerializeField] float speed;
-    
-    [HideInInspector] public bool IsMoving;
-    [HideInInspector] public bool IsWalking;
-    [HideInInspector] public float inputMagnitude;
     [SerializeField] float runSpeed;
+    private float curretSpeed;
+
+    [HideInInspector] public bool IsMoving;
     [HideInInspector] public bool IsRunning;
-    float curretSpeed;
+
     [Space(5)]
     [SerializeField] float rotationSpeed;
-    [HideInInspector] public float moveRotation;
-    private float moveInputAngle;
 
     [Header("// JUMP ------------------------------------------------------------------------------------------")]
     [SerializeField] float jumpForce;
-    [SerializeField] float coyoteTime;
     [SerializeField] float jumpBoostLimit;
-    [HideInInspector] public bool IsJumping;
-    float marginTimer;
+    [SerializeField] float coyoteTime;
+    private float marginTimer;
 
-    private float horizontal;
-    private float vertical;
+    [HideInInspector] public bool IsJumping;
+
+    // DIRECTIONS -------------------------------------------------------------------------------------------------
+    [HideInInspector] public float horizontal;
+    [HideInInspector] public float vertical;
     private Vector3 direction;
-    private Vector2 inputAngle;
 
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
@@ -40,29 +39,21 @@ public class PlayerController : MonoBehaviour
     {
         if (!rb) rb = GetComponent<Rigidbody>();
         if (!groundCheck) groundCheck = GetComponentInChildren<GroundCheck>();
-
-        mainCamera = Camera.main;
+        if (!col) col = GetComponentInChildren<Collider>();
+        if (!mainCamera) mainCamera = Camera.main;
     }
     
     void Update()
     {
         // Take direction
-        horizontal = Input.GetAxis("Horizontal");
-        vertical = Input.GetAxis("Vertical");
+        if (col.CompareTag("Player"))
+        {
+            horizontal = Input.GetAxis("Horizontal");
+            vertical = Input.GetAxis("Vertical");
 
-        IsMoving = horizontal != 0 || vertical != 0;
-
-
-        // For Animator
-        if (IsMoving && groundCheck.IsGrounded) IsWalking = true;
-        else IsWalking = false;
-
-        inputAngle = new Vector2(horizontal, vertical);
-        inputMagnitude = inputAngle.magnitude;
-
-        moveInputAngle = Mathf.Atan2(inputAngle.x, inputAngle.y) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y;
-        moveRotation = Mathf.DeltaAngle(transform.rotation.eulerAngles.y, moveInputAngle);
-
+            IsMoving = horizontal != 0 || vertical != 0;
+        }
+        
 
         // Switch Velocity
         if (Input.GetButton("Run") && IsMoving) IsRunning = true;
@@ -117,6 +108,7 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector3(rb.velocity.x, jumpBoostLimit, rb.velocity.z);
         }
     }
+
 
     private void Jump()
     {

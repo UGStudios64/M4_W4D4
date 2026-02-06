@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Android;
 
 public class AnimPlayer : MonoBehaviour
 {
     [SerializeField] private Animator anim;
     [SerializeField] private PlayerController player;
+    [SerializeField] private Rigidbody rb;
     [SerializeField] private GroundCheck groundCheck;
     [Space(5)]
     [SerializeField] private Material body;
@@ -17,6 +15,12 @@ public class AnimPlayer : MonoBehaviour
     [SerializeField] private float maxIntensity;
     [SerializeField] private float pulseSpeed;
 
+    // DIRECTIONS --------------------------------------------------------------------------------------------------------
+    private Vector2 inputAngle;
+    private float inputMagnitude;
+    private float moveInputAngle;
+    private float moveRotation;
+    
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
     private void Awake()
@@ -24,31 +28,51 @@ public class AnimPlayer : MonoBehaviour
         if (!anim) anim = GetComponentInChildren<Animator>();
         if (!player) player = GetComponent<PlayerController>();
         if (!groundCheck) groundCheck = GetComponentInChildren<GroundCheck>();
+        if (!rb) rb = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
-        // Move
-        anim.SetFloat("Speed", Mathf.Clamp(player.inputMagnitude, 0.3f, 1f));
-        anim.SetFloat("Rotation", player.moveRotation, 0.1f, Time.deltaTime);
+        // Speed -------------------- to regulate the animation speed
+        inputAngle = new Vector2(player.horizontal, player.vertical);
+        inputMagnitude = inputAngle.magnitude;
+        anim.SetFloat("Speed", Mathf.Clamp(inputMagnitude, 0.3f, 1f));
 
-        // Walk
-        anim.SetBool("Walk", player.IsWalking && groundCheck.IsGrounded);
 
-        // Run
+        // Rotation -------------------- Left/Right for inclinating movement
+        moveInputAngle = Mathf.Atan2(inputAngle.x, inputAngle.y) * Mathf.Rad2Deg + player.mainCamera.transform.eulerAngles.y;
+        moveRotation = Mathf.DeltaAngle(player.transform.rotation.eulerAngles.y, moveInputAngle);
+        anim.SetFloat("Rotation", moveRotation, 0.1f, Time.deltaTime);
+
+
+        // Walk --------------------
+        anim.SetBool("Walk", player.IsMoving && groundCheck.IsGrounded);
+
+
+        // Run --------------------
         anim.SetBool("Run", player.IsRunning && groundCheck.IsGrounded);
 
-        // Jump
+
+        // Jump --------------------
         if (player.IsJumping) anim.SetTrigger("Jump");
         anim.SetFloat("yVelocity", player.rb.velocity.y);
         anim.SetBool("Grounded", groundCheck.IsGrounded);
 
-        // In Danger
+
+        // In Danger --------------------
         if (lifebar.InDanger)
         {
             float emission = Mathf.Lerp(minIntensity, maxIntensity, (Mathf.Sin(Time.time * pulseSpeed) + 1f) / 2f);
             body.SetColor("_EmissionColor", Color.white * emission);
         }
         else body.SetColor("_EmissionColor", Color.white * minIntensity);
+    }
+
+
+    // Dead --------------------
+    public void OnDeath()
+    {
+        anim.SetTrigger("Dead");
+        rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
     }
 }

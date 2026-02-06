@@ -1,19 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UI_Fade : MonoBehaviour
 {
+    [SerializeField] private float fadeTime;
     private Image fade;
 
-    private void Awake()
+
+    // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
+    void Awake()
     {
         fade = GetComponent<Image>();
     }
     
-    private void Start()
+    void Start()
     {
-        fade.CrossFadeAlpha(0, 2, true);
+        fade.CrossFadeAlpha(0, fadeTime, true);
     }
 }
