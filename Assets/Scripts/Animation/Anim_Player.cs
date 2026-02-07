@@ -34,33 +34,33 @@ public class AnimPlayer : MonoBehaviour
     private void Update()
     {
         // Speed -------------------- to regulate the animation speed
-        inputAngle = new Vector2(player.horizontal, player.vertical);
+        inputAngle = new Vector2(player.GetHorizontal(), player.GetVertical());
         inputMagnitude = inputAngle.magnitude;
         anim.SetFloat("Speed", Mathf.Clamp(inputMagnitude, 0.3f, 1f));
 
 
         // Rotation -------------------- Left/Right for inclinating movement
-        moveInputAngle = Mathf.Atan2(inputAngle.x, inputAngle.y) * Mathf.Rad2Deg + player.mainCamera.transform.eulerAngles.y;
+        moveInputAngle = Mathf.Atan2(inputAngle.x, inputAngle.y) * Mathf.Rad2Deg + player.GetMainCamera().transform.eulerAngles.y;
         moveRotation = Mathf.DeltaAngle(player.transform.rotation.eulerAngles.y, moveInputAngle);
         anim.SetFloat("Rotation", moveRotation, 0.1f, Time.deltaTime);
 
 
         // Walk --------------------
-        anim.SetBool("Walk", player.IsMoving && groundCheck.IsGrounded);
+        anim.SetBool("Walk", player.GetIsMoving() && groundCheck.GetIsGrounded());
 
 
         // Run --------------------
-        anim.SetBool("Run", player.IsRunning && groundCheck.IsGrounded);
+        anim.SetBool("Run", player.GetIsRunning() && groundCheck.GetIsGrounded());
 
 
         // Jump --------------------
         if (player.IsJumping) anim.SetTrigger("Jump");
-        anim.SetFloat("yVelocity", player.rb.velocity.y);
-        anim.SetBool("Grounded", groundCheck.IsGrounded);
+        anim.SetFloat("yVelocity", player.GetRb().velocity.y);
+        anim.SetBool("Grounded", groundCheck.GetIsGrounded());
 
 
         // In Danger --------------------
-        if (lifebar.InDanger)
+        if (lifebar.GetInDanger())
         {
             float emission = Mathf.Lerp(minIntensity, maxIntensity, (Mathf.Sin(Time.time * pulseSpeed) + 1f) / 2f);
             body.SetColor("_EmissionColor", Color.white * emission);

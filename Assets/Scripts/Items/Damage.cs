@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Damage : MonoBehaviour
 {
-    [SerializeField] int damage;
+    [SerializeField] private int damage;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -11,8 +11,6 @@ public class Damage : MonoBehaviour
             Debug.Log($"{gameObject.name} make {damage} damages to {other.gameObject.name}");
             Life life = other.GetComponentInParent<Life>();
             life.TakeDamage(damage);
-
-            //Destroy(gameObject);
         }
     }
 }

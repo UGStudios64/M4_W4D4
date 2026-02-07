@@ -3,15 +3,17 @@ using UnityEngine.Events;
 
 public class CoinsHandler : MonoBehaviour
 {
-    public int coins;
+    [SerializeField] private int coins;
     [SerializeField] private UnityEvent<int> OnCoinsChanged;
+
+    #region// GET -----------------------------------------------------------------------------------------------------------------------
+    public int GetCoins() => coins;
+    #endregion
 
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
-    private void Awake()
-    {
-        OnCoinsChanged.Invoke(coins);
-    }
+    private void Start()
+    { OnCoinsChanged.Invoke(coins); }
 
 
     // FUNCTIONS //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-

@@ -53,4 +53,9 @@ public class UI_Menu : MonoBehaviour
     }
     private void TitleScreen()
     { SceneManager.LoadScene("TitleScreen"); }
+
+
+    // EXIT --------------------
+    public void Exit()
+    { Application.Quit(); }
 }

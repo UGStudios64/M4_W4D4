@@ -8,18 +8,16 @@ public class UI_Coin : MonoBehaviour
     private int needCoins;
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
-    private void Awake()
+    void Awake()
     {
         if (!connectedDoor) Debug.LogWarning($"Missing Connected Door");
         if (!coinCounter) Debug.LogWarning($"Missing Coin Counter");
 
-        needCoins = connectedDoor.needCoin;
+        needCoins = connectedDoor.GetNeedCoin();
     }
 
 
     // FUNCTIONS //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
     public void UpdateCoinCounter(int coins)
-    {
-        coinCounter.text = coins + "/" + needCoins;
-    }
+    { coinCounter.text = coins + "/" + needCoins; }
 }

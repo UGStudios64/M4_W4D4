@@ -4,21 +4,21 @@ public class GroundCheck : MonoBehaviour
 {
     [SerializeField] private LayerMask ground;
     [SerializeField] private float radius;
-    public bool IsGrounded;
+    private bool IsGrounded;
+
+    #region// GET -----------------------------------------------------------------------------------------------------------------------
+    public bool GetIsGrounded() => IsGrounded;
+    #endregion
 
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
     private void Update()
-    {
-        IsGrounded = GroundChecking();
-    }
+    { IsGrounded = GroundChecking(); }
 
 
     // FUNCTIONS //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
     private bool GroundChecking()
-    {
-        return Physics.CheckSphere(transform.position, radius, ground);
-    }
+    { return Physics.CheckSphere(transform.position, radius, ground); }
 
     void OnDrawGizmos()
     {

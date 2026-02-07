@@ -9,12 +9,8 @@ public class UI_Fade : MonoBehaviour
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
     void Awake()
-    {
-        fade = GetComponent<Image>();
-    }
+    { fade = GetComponent<Image>(); }
     
     void Start()
-    {
-        fade.CrossFadeAlpha(0, fadeTime, true);
-    }
+    { fade.CrossFadeAlpha(0, fadeTime, true); }
 }

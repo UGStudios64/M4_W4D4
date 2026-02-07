@@ -8,7 +8,7 @@ public class UI_Lifebar : MonoBehaviour
     [Header("// FILL RANGE -----------------------------------------------------------------------------------------")]
     [SerializeField] private float minFill;
     [SerializeField] private float maxFill;
-    [HideInInspector] public bool InDanger; // No,I am the danger!
+    private bool InDanger; // No,I am the danger!
 
     [Header("// PULSE IN DANGER -----------------------------------------------------------------------------------------")]
     [SerializeField] [Range(0.1f, 1f)] private float lifePercent;
@@ -16,12 +16,14 @@ public class UI_Lifebar : MonoBehaviour
     [SerializeField] private float pulseAmount;
     Vector3 baseScale;
 
+    #region// GET -----------------------------------------------------------------------------------------------------------------------
+    public bool GetInDanger() => InDanger;
+    #endregion
+
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
     private void Awake()
-    {
-        baseScale = transform.localScale;
-    }
+    { baseScale = transform.localScale;  }
     
     void Update()
     {

@@ -4,34 +4,46 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] public Rigidbody rb;
+    [SerializeField] private Rigidbody rb;
     [SerializeField] private GroundCheck groundCheck;
-    [SerializeField] public Camera mainCamera;
+    [SerializeField] private Camera mainCamera;
     private Collider col;
 
     [Header("// SPEED -----------------------------------------------------------------------------------------")]
-    [SerializeField] float speed;
-    [SerializeField] float runSpeed;
+    [SerializeField] private float speed;
+    [SerializeField] private float runSpeed;
     private float curretSpeed;
 
-    [HideInInspector] public bool IsMoving;
-    [HideInInspector] public bool IsRunning;
+    private bool IsMoving;
+    private bool IsRunning;
 
     [Space(5)]
-    [SerializeField] float rotationSpeed;
+    [SerializeField] private float rotationSpeed;
 
     [Header("// JUMP ------------------------------------------------------------------------------------------")]
-    [SerializeField] float jumpForce;
-    [SerializeField] float jumpBoostLimit;
-    [SerializeField] float coyoteTime;
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float jumpBoostLimit;
+    [SerializeField] private float coyoteTime;
     private float marginTimer;
 
-    [HideInInspector] public bool IsJumping;
+    public bool IsJumping;
 
     // DIRECTIONS -------------------------------------------------------------------------------------------------
-    [HideInInspector] public float horizontal;
-    [HideInInspector] public float vertical;
+    private float horizontal;
+    private float vertical;
     private Vector3 direction;
+
+    #region // GET -----------------------------------------------------------------------------------------------------------------------
+    public Rigidbody GetRb() => rb;
+    public Camera GetMainCamera() => mainCamera;
+
+    public bool GetIsMoving() => IsMoving;
+    public bool GetIsRunning() => IsRunning;
+    public bool GetIsJumping() => IsJumping;
+
+    public float GetHorizontal() => horizontal;
+    public float GetVertical() => vertical;
+    #endregion
 
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
@@ -45,14 +57,13 @@ public class PlayerController : MonoBehaviour
     
     void Update()
     {
-        // Take direction
-        if (col.CompareTag("Player"))
-        {
-            horizontal = Input.GetAxis("Horizontal");
-            vertical = Input.GetAxis("Vertical");
+        if (!col.CompareTag("Player")) return;
 
-            IsMoving = horizontal != 0 || vertical != 0;
-        }
+        // Take direction
+        horizontal = Input.GetAxis("Horizontal");
+        vertical = Input.GetAxis("Vertical");
+
+        IsMoving = horizontal != 0 || vertical != 0;
         
 
         // Switch Velocity
@@ -64,7 +75,7 @@ public class PlayerController : MonoBehaviour
 
 
         // Jumping
-        if (groundCheck.IsGrounded) marginTimer = coyoteTime; 
+        if (groundCheck.GetIsGrounded()) marginTimer = coyoteTime; 
         else marginTimer -= Time.deltaTime;
 
         if (Input.GetButtonDown("Jump") && marginTimer > 0f) IsJumping = true; 
@@ -72,6 +83,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!col.CompareTag("Player")) return;
+
         Move();
         Jump();
     }
@@ -103,7 +116,7 @@ public class PlayerController : MonoBehaviour
 
 
         // JUMP BOOST LIMIT //------- This will limit an accidental jump boost when the player jump on some edges
-        if (!IsJumping && groundCheck.IsGrounded && rb.velocity.y > jumpBoostLimit)
+        if (!IsJumping && groundCheck.GetIsGrounded() && rb.velocity.y > jumpBoostLimit)
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpBoostLimit, rb.velocity.z);
         }

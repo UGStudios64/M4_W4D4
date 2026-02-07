@@ -8,14 +8,14 @@ public class UI_Button : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     TMP_Text text;
 
     [Header("// CHANGE COLOR ------------------------------------------------------------------------------------------")]
-    public Color normalColor;
-    public Color hoverColor;
+    [SerializeField] private Color normalColor;
+    [SerializeField] private Color hoverColor;
 
     [Header("// ANIMATION ------------------------------------------------------------------------------------------")]
-    public float scaleMultiplier;
-    public float transitionSpeed;
+    [SerializeField] private float scaleMultiplier;
+    [SerializeField] private float transitionSpeed;
 
-    bool isHovered;
+    private bool isHovered;
 
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-

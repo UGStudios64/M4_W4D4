@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class ActiveDoor : MonoBehaviour
 {
@@ -16,9 +12,13 @@ public class ActiveDoor : MonoBehaviour
     private CoinsHandler coinsHandler;
 
     [Header("// FOR ACTIVE -----------------------------------------------------------------------------------------")]
-    public int needCoin;
+    [SerializeField] private int needCoin;
     private bool IsGlowing;
     private bool IsOpening;
+
+    #region// GET -----------------------------------------------------------------------------------------------------------------------
+    public int GetNeedCoin() => needCoin;
+    #endregion
 
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
@@ -32,25 +32,19 @@ public class ActiveDoor : MonoBehaviour
     }
 
     void Start()
-    {
-        coinsHandler = player.GetComponent<CoinsHandler>();
-    }
+    { coinsHandler = player.GetComponent<CoinsHandler>(); }
 
     void Update()
-    {
-        Glowing();
-    }
+    { Glowing(); }
 
     private void OnTriggerEnter(Collider other)
-    {
-        Opening(other);
-    }
+    {  Opening(other); }
 
 
     // FUNCTIONS //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
     private void Glowing()
     {
-        if (coinsHandler.coins >= needCoin && !IsGlowing)
+        if (coinsHandler.GetCoins() >= needCoin && !IsGlowing)
         {
             Debug.Log($"Door Logo is Glowing");
 

@@ -3,12 +3,16 @@ using UnityEngine.Events;
 
 public class Life : MonoBehaviour
 {
-    [SerializeField] int maxHP;
-    public int HP;
+    [SerializeField] private int maxHP;
+    private int HP;
     private Collider col;
 
     [SerializeField] private UnityEvent<int, int> OnHPChanged;
     [SerializeField] private UnityEvent OnDeath;
+
+    #region// GET -----------------------------------------------------------------------------------------------------------------------
+    public int GetHP() => HP;
+    #endregion
 
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
@@ -27,9 +31,11 @@ public class Life : MonoBehaviour
 
         if (HP <= 0)
         {
-            // SetUp the Death sequence
+            // SetUp the Death sequence ----------
             OnHPChanged.Invoke(HP, maxHP);
             OnDeath.Invoke();
+
+            this.tag = "DEAD";
             col.tag = "DEAD";
 
             Debug.Log($"{gameObject.name} is dead");

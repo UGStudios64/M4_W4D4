@@ -6,22 +6,22 @@ public class CameraOrbit : MonoBehaviour
     [SerializeField] Vector3 offset;
 
     [Header("// SENSITIVITY ------------------------------------------------------------------------------------------")]
-    [SerializeField] float mouseSensitivity;
+    [SerializeField] private float mouseSensitivity;
     [Space(5)]
-    [SerializeField] float stickSensitivityX;
-    [SerializeField] float stickSensitivityY;
+    [SerializeField] private float stickSensitivityX;
+    [SerializeField] private float stickSensitivityY;
 
     [Header("// CALMP ------------------------------------------------------------------------------------------")]
-    [SerializeField] float topClamp;
-    [SerializeField] float bottomClamp;
+    [SerializeField] private float topClamp;
+    [SerializeField] private float bottomClamp;
 
-    float yaw;
-    float pitch;
+    private float yaw;
+    private float pitch;
 
     [Header("// SMOOTH HEIGHT ------------------------------------------------------------------------------------------")]
-    [SerializeField] float heightFollowSpeed;
-    [SerializeField] float heightLimit;
-    float smoothY;
+    [SerializeField] private float heightFollowSpeed;
+    [SerializeField] private float heightLimit;
+    private float smoothY;
 
 
     // GAME //-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
@@ -55,10 +55,7 @@ public class CameraOrbit : MonoBehaviour
         // Hight Smooth
         float targetY = target.position.y;
 
-        if (Mathf.Abs(targetY - smoothY) > heightLimit)
-        { 
-            smoothY = Mathf.Lerp(smoothY, targetY, Time.deltaTime * heightFollowSpeed);
-        }
+        if (Mathf.Abs(targetY - smoothY) > heightLimit) smoothY = Mathf.Lerp(smoothY, targetY, Time.deltaTime * heightFollowSpeed);
         Vector3 focusPoint = new Vector3(target.position.x, smoothY, target.position.z);
 
 
